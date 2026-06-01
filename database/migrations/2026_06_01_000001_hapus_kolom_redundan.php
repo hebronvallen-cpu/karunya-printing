@@ -10,17 +10,21 @@ return new class extends Migration
     {
         // Drop kolom redundan dari tabel_harga_layanan
         Schema::table('tabel_harga_layanan', function (Blueprint $table): void {
-            $table->dropColumn('nama_layanan');
+            if (Schema::hasColumn('tabel_harga_layanan', 'nama_layanan')) {
+                $table->dropColumn('nama_layanan');
+            }
         });
 
         // Normalisasi tabel_galeri_layanan: tambah id_layanan, drop kode/label kategori
         Schema::table('tabel_galeri_layanan', function (Blueprint $table): void {
-            $table->unsignedBigInteger('id_layanan')->nullable()->after('id_galeri_layanan');
-            $table->foreign('id_layanan')
-                ->references('id_layanan')
-                ->on('tabel_layanan')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            if (!Schema::hasColumn('tabel_galeri_layanan', 'id_layanan')) {
+                $table->unsignedBigInteger('id_layanan')->nullable()->after('id_galeri_layanan');
+                $table->foreign('id_layanan')
+                    ->references('id_layanan')
+                    ->on('tabel_layanan')
+                    ->onDelete('cascade')
+                    ->onUpdate('cascade');
+            }
         });
 
         // Migrate data: cocokkan kategori dengan layanan

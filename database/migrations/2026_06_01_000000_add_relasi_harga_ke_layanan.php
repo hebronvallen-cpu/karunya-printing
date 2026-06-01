@@ -10,8 +10,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('tabel_harga_layanan', function (Blueprint $table): void {
-            // Tambahkan kolom id_layanan
-            $table->unsignedBigInteger('id_layanan')->nullable()->after('id_harga_layanan');
+            // Tambahkan kolom id_layanan jika belum ada
+            if (!Schema::hasColumn('tabel_harga_layanan', 'id_layanan')) {
+                $table->unsignedBigInteger('id_layanan')->nullable()->after('id_harga_layanan');
+            }
         });
 
         // Update data: cocokkan berdasarkan nama_layanan
