@@ -18,14 +18,14 @@ return new class extends Migration
 
         // Update data: cocokkan berdasarkan nama_layanan
         DB::statement("
-            UPDATE tabel_harga_layanan h
-            SET h.id_layanan = (
-                SELECT l.id_layanan
-                FROM tabel_layanan l
-                WHERE LOWER(l.judul) = LOWER(h.nama_layanan)
+            UPDATE tabel_harga_layanan
+            SET id_layanan = (
+                SELECT id_layanan
+                FROM tabel_layanan
+                WHERE LOWER(judul) = LOWER(tabel_harga_layanan.nama_layanan)
                 LIMIT 1
             )
-            WHERE h.id_layanan IS NULL
+            WHERE id_layanan IS NULL
         ");
 
         // Tambahkan foreign key constraint

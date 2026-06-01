@@ -28,16 +28,15 @@ return new class extends Migration
         });
 
         // Migrate data: cocokkan kategori dengan layanan
-        // Jika tidak ada yang cocok, set null (akan handle manual atau defaultkan)
         \Illuminate\Support\Facades\DB::statement("
-            UPDATE tabel_galeri_layanan g
-            SET g.id_layanan = (
-                SELECT l.id_layanan
-                FROM tabel_layanan l
-                WHERE LOWER(l.judul) = LOWER(g.label_kategori)
+            UPDATE tabel_galeri_layanan
+            SET id_layanan = (
+                SELECT id_layanan
+                FROM tabel_layanan
+                WHERE LOWER(judul) = LOWER(tabel_galeri_layanan.label_kategori)
                 LIMIT 1
             )
-            WHERE g.label_kategori != ''
+            WHERE label_kategori != ''
         ");
 
         // Drop kolom redundan kategori
