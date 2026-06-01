@@ -1,0 +1,16 @@
+/* Admin Prices list styles */
+
+.admin-filters {
+  display: grid;
+  gap: 1rem;
+  padding: 1.15rem;
+  border-radius: 1.3rem;
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  margin-bottom: 1.25rem;
+}
+
+.admin-filters-grid {
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+

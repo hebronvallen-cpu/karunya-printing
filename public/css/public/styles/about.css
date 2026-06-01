@@ -1,0 +1,37 @@
+/* About / Tentang page styles */
+
+.home-about-grid {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.home-story-card,
+.home-detail-card,
+.home-photo-card {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.home-card-kicker {
+  font-size: 0.76rem;
+  letter-spacing: 0.18em;
+  padding: 0.4rem 0.85rem;
+  margin-bottom: 0.35rem;
+}
+
+.home-about-grid img {
+  width: 100%;
+  display: block;
+  border-radius: 1rem;
+}
+
+.home-checklist {
+  display: grid;
+  gap: 0.7rem;
+  padding-left: 1.1rem;
+}
+
+.home-checklist li {
+  color: var(--text-secondary);
+}
+

@@ -1,0 +1,117 @@
+/* Admin Gallery list styles */
+
+.admin-table--fixed {
+  table-layout: fixed;
+}
+
+.admin-table--fixed th,
+.admin-table--fixed td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-table--fixed td.truncate {
+  max-width: 180px;
+}
+
+/* Fallback class (if truncate used without fixed table) */
+.admin-table .truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-filters-grid {
+
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+
+.admin-filters {
+  display: grid;
+  gap: 1rem;
+  padding: 1.15rem;
+  border-radius: 1.3rem;
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  margin-bottom: 1.25rem;
+}
+
+.admin-table .thumb {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 0.95rem;
+  object-fit: cover;
+  box-shadow: var(--admin-shadow-sm);
+}
+
+.admin-list-shell {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-list-pager {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.85rem;
+}
+
+.admin-list-pager[hidden] {
+  display: none !important;
+}
+
+.admin-list-pager__status {
+  min-width: 7.5rem;
+  color: var(--admin-text-soft);
+  font-weight: 800;
+  text-align: center;
+}
+
+.admin-list-pager__btn {
+  width: 2.75rem;
+  height: 2.75rem;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--admin-border);
+  border-radius: 999px;
+  background: var(--admin-surface-strong);
+  color: var(--admin-text);
+  box-shadow: var(--admin-shadow-sm);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.admin-list-pager__btn:hover:not(:disabled),
+.admin-list-pager__btn:focus-visible:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--admin-shadow-md);
+}
+
+.admin-list-pager__btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.pager-triangle {
+  width: 0;
+  height: 0;
+  border-top: 0.42rem solid transparent;
+  border-bottom: 0.42rem solid transparent;
+}
+
+.pager-triangle--prev {
+  margin-right: 0.12rem;
+  border-right: 0.62rem solid currentColor;
+}
+
+.pager-triangle--next {
+  margin-left: 0.12rem;
+  border-left: 0.62rem solid currentColor;
+}
+
+@media (max-width: 560px) {
+  .admin-list-pager {
+    justify-content: center;
+  }
+}

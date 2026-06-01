@@ -1,0 +1,92 @@
+/* Services page styles */
+
+.page-layanan .services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+@media (min-width: 1024px) {
+  .page-layanan .services-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .page-layanan .services-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .page-layanan .services-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+.service-card {
+  padding: 1.75rem;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.service-card-content {
+  flex: 1;
+}
+
+.service-card h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+  line-height: 1.3;
+}
+
+.service-card p {
+  font-size: 0.92rem;
+  opacity: 0.85;
+  margin: 0;
+  line-height: 1.55;
+}
+
+.item-wa-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 1rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 8px;
+  background: #16a34a;
+  color: #ffffff !important;
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  box-shadow: var(--shadow-sm);
+}
+
+.item-wa-link:hover {
+  background: #15803d;
+  transform: translateY(-1px);
+}
+
+.bg-cmyk-cyan { background: var(--cmyk-cyan); color: #fff !important; }
+.bg-cmyk-magenta { background: var(--cmyk-magenta); color: #fff !important; }
+.bg-cmyk-yellow { background: var(--cmyk-yellow); color: #1a1a1a !important; }
+.bg-cmyk-black { background: var(--cmyk-black); color: #fff !important; }
+
+@media (max-width: 640px) {
+  .service-card { min-height: auto; padding: 1.25rem; }
+  .service-card h3 { font-size: 1.05rem; }
+  .service-card p { font-size: 0.88rem; }
+  .item-wa-link { width: 100%; font-size: 0.82rem; }
+}
+

@@ -1,0 +1,141 @@
+/* Home page styles */
+
+/* Hero slider */
+.page-home .hero-slider,
+.page-home .hero-slider-viewport,
+.page-home .hero-slider-track,
+.page-home .hero-slide {
+  box-sizing: border-box;
+}
+
+.page-home .hero-slider {
+  position: relative;
+  height: 500px;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md, 0 30px 70px -34px rgba(15, 23, 42, 0.28));
+}
+
+@media (min-width: 768px) {
+  .page-home .hero-slider { height: 600px; }
+}
+
+.page-home .hero-slider-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+}
+
+.page-home .hero-slide {
+  flex: 0 0 100%;
+  height: 100%;
+  position: relative;
+}
+
+.page-home .hero-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.page-home .hero-slide-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.45) 60%, rgba(0,0,0,0.70) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 2rem 5rem;
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.4s;
+  text-align: center;
+}
+
+.page-home .hero-slide.is-active .hero-slide-overlay,
+.page-home .hero-slide[data-real-index="0"] .hero-slide-overlay {
+  opacity: 1;
+}
+
+.page-home .hero-slide-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  opacity: 0.95;
+  margin-bottom: 0.5rem;
+}
+
+.page-home .hero-slide-copy strong {
+  font-size: 1.25rem;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.page-home .hero-slide-copy span {
+  opacity: 0.9;
+  font-size: 1rem;
+}
+
+.page-home .hero-slider-dots {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.75rem;
+  z-index: 10;
+}
+
+.page-home .hero-slider-dot {
+  width: clamp(7px, 1.2vw, 14px);
+  height: clamp(7px, 1.2vw, 14px);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.4);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  border: 0;
+}
+
+.page-home .hero-slider-dot.is-active,
+.page-home .hero-slider-dot:hover {
+  background: #fff;
+  transform: scale(1.3);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+/* Home hero layout */
+.page-home .hero {
+  min-height: auto;
+  padding: 9.5rem 0 5.5rem;
+}
+
+.page-home .hero::before {
+  background: radial-gradient(circle at 10% 20%, rgba(45, 212, 191, 0.18), transparent 26%),
+              radial-gradient(circle at 82% 12%, rgba(251, 113, 133, 0.12), transparent 22%),
+              radial-gradient(circle at 48% 88%, rgba(251, 191, 36, 0.16), transparent 26%),
+              linear-gradient(180deg, rgba(255, 255, 255, 0.52), rgba(255, 255, 255, 0));
+}
+
+/* Home value section */
+.page-home .home-value-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (max-width: 900px) {
+  .page-home .home-value-grid { grid-template-columns: 1fr; }
+}
+
+/* Mobile adjustments */
+@media (max-width: 640px) {
+  .page-home .hero-slider { margin-top: 80px; height: auto; min-height: 0; }
+  .page-home .hero-slide-overlay { padding: 1rem 1.25rem 3.5rem; }
+}
+

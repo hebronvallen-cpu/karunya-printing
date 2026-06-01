@@ -1,0 +1,9 @@
+RewriteEngine On
+RewriteRule ^(style-modern\.css|style-responsive\.css|admin\.css|site\.js|favicon\.ico|robots\.txt)$ public/$1 [L,NC]
+RewriteRule ^(build/.*)$ public/$1 [L,NC]
+RewriteRule ^(storage/.*)$ public/$1 [L,NC]
+RewriteRule ^(uploads/.*)$ public/$1 [L,NC]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^.*$ index.php [L,QSA]
+

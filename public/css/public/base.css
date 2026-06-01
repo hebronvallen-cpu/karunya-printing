@@ -1,0 +1,118 @@
+/* Public Base CSS (shared) */
+/* Note: place shared variables/components here. Page-specific styles are in per-page files. */
+
+:root {
+  --cmyk-cyan: #2dd4bf;
+  --cmyk-magenta: #fb7185;
+  --cmyk-yellow: #fbbf24;
+  --cmyk-black: #1e293b;
+
+  --bg-primary: #fafbfc;
+  --bg-secondary: #ffffff;
+  --bg-glass: rgba(255, 255, 255, 0.72);
+  --text-primary: #111827;
+  --text-secondary: #5f6776;
+
+  --accent: var(--cmyk-cyan);
+  --accent-dark: var(--cmyk-magenta);
+  --accent-glass: rgba(45, 212, 191, 0.12);
+  --border: rgba(18, 23, 35, 0.08);
+
+  --surface-base: linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.86));
+  --surface-tint: linear-gradient(135deg, rgba(45, 212, 191, 0.08), rgba(251, 113, 133, 0.05), rgba(251, 191, 36, 0.11));
+  --surface-tint-strong: linear-gradient(135deg, rgba(45, 212, 191, 0.16), rgba(251, 113, 133, 0.1), rgba(251, 191, 36, 0.16));
+
+  --shadow-sm: 0 14px 30px -24px rgba(15, 23, 42, 0.35);
+  --shadow-md: 0 30px 70px -34px rgba(15, 23, 42, 0.28);
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+
+  --focus-ring: rgba(45, 212, 191, 0.42);
+}
+
+[data-theme="dark"] {
+  --bg-primary: #0f131b;
+  --bg-secondary: #141a24;
+  --bg-glass: rgba(20, 26, 36, 0.74);
+  --text-primary: #f8fafc;
+  --text-secondary: #97a3b7;
+
+  --accent-glass: rgba(45, 212, 191, 0.18);
+  --border: rgba(255, 255, 255, 0.08);
+
+  --surface-base: linear-gradient(135deg, rgba(23, 30, 42, 0.94), rgba(16, 22, 31, 0.9));
+  --surface-tint: linear-gradient(135deg, rgba(45, 212, 191, 0.16), rgba(251, 113, 133, 0.1), rgba(251, 191, 36, 0.12));
+  --surface-tint-strong: linear-gradient(135deg, rgba(45, 212, 191, 0.22), rgba(251, 113, 133, 0.16), rgba(251, 191, 36, 0.16));
+
+  --focus-ring: rgba(45, 212, 191, 0.52);
+  --shadow-sm: 0 16px 34px -26px rgba(0, 0, 0, 0.55);
+  --shadow-md: 0 34px 72px -36px rgba(0, 0, 0, 0.6);
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* Layout shared */
+.container {
+  width: min(1200px, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+/* Header/footer shared */
+.header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+
+.footer {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  padding: 4rem 0 2rem;
+}
+
+/* Buttons shared */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.95rem 1.5rem;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: #ffffff;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-outline {
+  background: var(--surface-base);
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+
+/* Utility shared */
+.to-top, .wa-float {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1100;
+}
+

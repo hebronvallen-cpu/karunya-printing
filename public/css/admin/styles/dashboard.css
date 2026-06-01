@@ -1,0 +1,45 @@
+/* Admin Dashboard styles */
+
+/* Keep mostly layout/panel/table generic in base.css */
+
+.admin-main .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1rem;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 680px;
+}
+
+.admin-table th {
+  background: var(--admin-ink, #121723);
+  color: #ffffff;
+  font-size: 0.92rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.admin-table td {
+  border-bottom: 1px solid var(--admin-border, rgba(18,23,35,0.08));
+  color: var(--admin-text, #18202d);
+  vertical-align: middle;
+}
+
+.admin-table tbody tr:nth-child(even) td {
+  background: rgba(18, 23, 35, 0.015);
+}
+
+.admin-table tbody tr:hover td {
+  background: rgba(0, 174, 239, 0.06);
+}
+
+.table-scroll {
+  overflow-x: auto;
+  border-radius: 1.25rem;
+  border: 1px solid var(--admin-border, rgba(18,23,35,0.08));
+  background: var(--admin-surface, rgba(255,255,255,0.9));
+}
+
