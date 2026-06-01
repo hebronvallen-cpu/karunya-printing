@@ -8,11 +8,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <title>Lupa Password | Karunya Printing Admin</title>
-    <link rel="stylesheet" href="{{ url('/admin.css') }}?v={{ $adminStyleVersion }}">
+    <link rel="stylesheet" href="/admin.css?v={{ $adminStyleVersion }}">
     <script>const savedTheme = localStorage.getItem('admin-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); document.documentElement.setAttribute('data-theme', savedTheme);</script>
 </head>
-<body class="page-admin-login reveal" style="--admin-hero-bg: url('{{ url('/gambar/tempat.jpeg') }}');">
+<body class="page-admin-login reveal" style="--admin-hero-bg: url('/gambar/tempat.jpeg');">
     <main class="admin-hero">
         <div class="container admin-hero-shell">
             <section class="admin-login-intro">
@@ -44,7 +45,7 @@
                     <div class="alert success">{{ session('success') }}</div>
                 @endif
 
-                <form method="POST" class="admin-login-form" action="{{ url('/admin/recovery/request.php') }}">
+                <form method="POST" class="admin-login-form" action="/admin/recovery/request.php">
                     @csrf
                     <div class="form-group">
                         <label for="username">Username atau Email</label>
@@ -56,8 +57,8 @@
                 <div class="login-footer">
                     <p class="admin-login-note">Tidak perluPanic? Ingat sesuatu?</p>
                     <div class="admin-login-actions">
-                        <a class="btn btn-outline btn-sm" href="{{ url('/admin/login.php?key=' . urlencode($accessKey)) }}">Kembali ke Login</a>
-                        <a class="btn btn-outline btn-sm" href="{{ url('/index.php') }}">Lihat Website</a>
+                        <a class="btn btn-outline btn-sm" href="/admin/login.php?key={{ urlencode($accessKey) }}">Kembali ke Login</a>
+                        <a class="btn btn-outline btn-sm" href="/index.php">Lihat Website</a>
                     </div>
                 </div>
             </section>

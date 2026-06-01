@@ -8,13 +8,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <title>Login Admin | Karunya Printing</title>
-    <link rel="stylesheet" href="{{ url('/admin.css') }}?v={{ filemtime(public_path('admin.css')) }}">
-    <link rel="stylesheet" href="{{ url('/css/admin/base.css') }}?v={{ $adminStyleVersion }}">
-    <link rel="stylesheet" href="{{ url('/css/admin/styles/login.css') }}?v={{ filemtime(public_path('css/admin/styles/login.css')) }}">
+    <link rel="stylesheet" href="/admin.css?v={{ filemtime(public_path('admin.css')) }}">
+    <link rel="stylesheet" href="/css/admin/base.css?v={{ $adminStyleVersion }}">
+    <link rel="stylesheet" href="/css/admin/styles/login.css?v={{ filemtime(public_path('css/admin/styles/login.css')) }}">
     <script>const savedTheme = localStorage.getItem('admin-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); document.documentElement.setAttribute('data-theme', savedTheme);</script>
 </head>
-<body class="page-admin-login reveal" style="--admin-hero-bg: url('{{ url('/gambar/tempat.jpeg') }}');">
+<body class="page-admin-login reveal" style="--admin-hero-bg: url('/gambar/tempat.jpeg');">
     <button class="theme-toggle admin-login-theme-toggle" type="button" id="admin-login-theme-toggle" aria-label="Ubah tema"></button>
     <main class="admin-hero">
         <div class="container admin-hero-shell">
@@ -44,7 +45,7 @@
                     <div class="alert error">{{ session('error') }}</div>
                 @endif
 
-                <form method="POST" class="admin-login-form" action="{{ url('/admin/login.php') }}?key={{ urlencode($accessKey) }}">
+                <form method="POST" class="admin-login-form" action="/admin/login.php?key={{ urlencode($accessKey) }}">
                     @csrf
                     <div class="form-group">
                         <label for="username">Username</label>
@@ -60,8 +61,8 @@
 <div class="login-footer">
                     <p class="admin-login-note">Halaman ini khusus untuk admin internal Karunya Printing.</p>
                     <div class="admin-login-actions">
-                        <a class="btn btn-outline btn-sm" href="{{ url('/admin/recovery/request.php') }}">Lupa Password?</a>
-                        <a class="btn btn-outline btn-sm" href="{{ url('/index.php') }}">Kembali ke Website</a>
+                        <a class="btn btn-outline btn-sm" href="/admin/recovery/request.php">Lupa Password?</a>
+                        <a class="btn btn-outline btn-sm" href="/index.php">Kembali ke Website</a>
                     </div>
                 </div>
             </section>

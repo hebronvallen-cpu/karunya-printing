@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('page-styles-admin')
-    <link rel="stylesheet" href="{{ url('/css/admin/styles/dashboard.css') }}?v={{ filemtime(public_path('css/admin/styles/dashboard.css')) }}">
+    <link rel="stylesheet" href="/css/admin/styles/dashboard.css?v={{ filemtime(public_path('css/admin/styles/dashboard.css')) }}">
 @endsection
 
 @section('content')

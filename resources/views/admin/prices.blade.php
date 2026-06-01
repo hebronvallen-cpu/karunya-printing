@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('page-styles-admin')
-    <link rel="stylesheet" href="{{ url('/css/admin/styles/prices.css') }}?v={{ filemtime(public_path('css/admin/styles/prices.css')) }}">
+    <link rel="stylesheet" href="/css/admin/styles/prices.css?v={{ filemtime(public_path('css/admin/styles/prices.css')) }}">
 @endsection
 
 @section('content')
@@ -12,10 +12,10 @@
             <p class="panel-subtitle">Menampilkan {{ $priceItems->count() }} dari {{ $priceTotalCount }} data harga.</p>
         </div>
         <div class="panel-actions">
-            <a class="btn btn-primary" href="{{ url('/admin/prices-form.php') }}">+ Tambah Harga</a>
+            <a class="btn btn-primary" href="/admin/prices-form.php">+ Tambah Harga</a>
         </div>
 
-    <form method="GET" class="admin-filters admin-filters-grid" action="{{ url('/admin/prices.php') }}">
+    <form method="GET" class="admin-filters admin-filters-grid" action="/admin/prices.php">
         <div class="field-group">
             <input id="price-search" name="q" type="text" value="{{ $searchQuery }}" placeholder="Pencarian" aria-label="Pencarian harga">
         </div>
@@ -31,7 +31,7 @@
 
         <div class="field-actions">
             <button class="btn btn-primary" type="submit">Terapkan</button>
-            <a class="btn btn-outline" href="{{ url('/admin/prices.php') }}">Reset</a>
+            <a class="btn btn-outline" href="/admin/prices.php">Reset</a>
         </div>
     </form>
 
@@ -59,8 +59,8 @@
                             <td>{{ $item->sort_order }}</td>
                             <td>{{ $item->is_active ? 'Aktif' : 'Nonaktif' }}</td>
                             <td class="actions">
-                                <a class="btn btn-outline" href="{{ url('/admin/prices-form.php') }}?edit={{ $item->id }}">Edit</a>
-                                <form method="POST" action="{{ url('/admin/prices.php') }}" onsubmit="return confirm('Hapus item ini?');">
+                                <a class="btn btn-outline" href="/admin/prices-form.php?edit={{ $item->id }}">Edit</a>
+                                <form method="POST" action="/admin/prices.php" onsubmit="return confirm('Hapus item ini?');">
                                     @csrf
                                     <input type="hidden" name="action" value="delete">
                                     <input type="hidden" name="id" value="{{ $item->id }}">

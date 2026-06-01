@@ -8,10 +8,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <title>Akses Ditolak | Karunya Printing</title>
-    <link rel="stylesheet" href="{{ url('/admin.css') }}?v={{ filemtime(public_path('admin.css')) }}">
+    <link rel="stylesheet" href="/admin.css?v={{ filemtime(public_path('admin.css')) }}">
 </head>
-<body class="page-admin-gate" style="--admin-hero-bg: url('{{ url('/gambar/tempat.jpeg') }}');">
+<body class="page-admin-gate" style="--admin-hero-bg: url('/gambar/tempat.jpeg');">
     <main class="admin-hero">
         <div class="container admin-hero-shell admin-gate-shell">
             <section class="admin-gate-card panel">
@@ -26,7 +27,7 @@
                 <h1 class="admin-login-title">Akses Ditolak</h1>
                 <p class="admin-login-subtitle">Halaman login admin hanya bisa dibuka lewat tautan admin resmi yang sudah disiapkan.</p>
                 <div class="admin-login-actions">
-                    <a class="btn btn-primary full-width" href="{{ url('/index.php') }}">Kembali ke Website</a>
+                    <a class="btn btn-primary full-width" href="/index.php">Kembali ke Website</a>
                 </div>
             </section>
         </div>

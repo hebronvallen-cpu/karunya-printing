@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('page-styles-admin')
-    <link rel="stylesheet" href="{{ url('/css/admin/styles/services.css') }}?v={{ filemtime(public_path('css/admin/styles/services.css')) }}">
+    <link rel="stylesheet" href="/css/admin/styles/services.css?v={{ filemtime(public_path('css/admin/styles/services.css')) }}">
 @endsection
 
 @section('content')
@@ -12,11 +12,11 @@
             <p class="panel-subtitle">Menampilkan {{ $serviceItems->count() }} dari {{ $serviceTotalCount }} data layanan.</p>
         </div>
         <div class="panel-actions">
-            <a class="btn btn-primary" href="{{ url('/admin/services-form.php') }}">+ Tambah Layanan</a>
+            <a class="btn btn-primary" href="/admin/services-form.php">+ Tambah Layanan</a>
         </div>
     </div>
 
-    <form method="GET" class="admin-filters admin-filters-grid" action="{{ url('/admin/services.php') }}">
+    <form method="GET" class="admin-filters admin-filters-grid" action="/admin/services.php">
         <div class="field-group">
             <input id="service-search" name="q" type="text" value="{{ $searchQuery }}" placeholder="Pencarian" aria-label="Pencarian layanan">
         </div>
@@ -32,7 +32,7 @@
 
         <div class="field-actions">
             <button class="btn btn-primary" type="submit">Terapkan</button>
-            <a class="btn btn-outline" href="{{ url('/admin/services.php') }}">Reset</a>
+            <a class="btn btn-outline" href="/admin/services.php">Reset</a>
         </div>
     </form>
 
@@ -59,8 +59,8 @@
                                 <td>{{ $item->sort_order }}</td>
                                 <td>{{ $item->is_active ? 'Aktif' : 'Nonaktif' }}</td>
                                 <td class="actions">
-                                    <a class="btn btn-outline" href="{{ url('/admin/services-form.php') }}?edit={{ $item->id }}">Edit</a>
-                                    <form method="POST" action="{{ url('/admin/services.php') }}" onsubmit="return confirm('Hapus item ini?');">
+                                    <a class="btn btn-outline" href="/admin/services-form.php?edit={{ $item->id }}">Edit</a>
+                                    <form method="POST" action="/admin/services.php" onsubmit="return confirm('Hapus item ini?');">
                                         @csrf
                                         <input type="hidden" name="action" value="delete">
                                         <input type="hidden" name="id" value="{{ $item->id }}">

@@ -12,7 +12,7 @@
 
     @if($showBackButton)
     <div style="margin-bottom: 1.5rem;">
-        <a href="{{ url('/admin/settings.php') }}" class="btn btn-secondary" style="background: #6b7280; color: #fff; text-decoration: none; display: inline-flex; align-items: center; padding: 0.5rem 1rem; border-radius: 8px;">
+        <a href="/admin/settings.php" class="btn btn-secondary" style="background: #6b7280; color: #fff; text-decoration: none; display: inline-flex; align-items: center; padding: 0.5rem 1rem; border-radius: 8px;">
             <i class="fas fa-arrow-left" style="margin-right: 8px;"></i> Kembali ke Pengaturan
         </a>
     </div>
@@ -24,7 +24,7 @@
                 <h2>Profil Admin</h2>
                 <p>Kelola informasi profil akun Anda</p>
             </div>
-            <form method="POST" action="{{ url('/admin/settings-profile.php') }}">
+            <form method="POST" action="/admin/settings-profile.php">
                 @csrf
                 <input type="hidden" name="action" value="update_profile">
 

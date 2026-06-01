@@ -8,7 +8,7 @@
             <p>{{ $editData ? 'Perbarui data slider home.' : 'Tambah slider home baru.' }}</p>
         </div>
         <div class="panel-actions">
-            <a class="btn btn-outline" href="{{ url('/admin/home-slides.php') }}">Kembali ke Daftar</a>
+            <a class="btn btn-outline" href="/admin/home-slides.php">Kembali ke Daftar</a>
         </div>
 
     @if (session('success'))
@@ -18,7 +18,7 @@
         <div class="alert error">{{ session('error') }}</div>
     @endif
 
-    <form class="admin-form" method="post" action="{{ url('/admin/home-slides-form.php') }}" enctype="multipart/form-data">
+    <form class="admin-form" method="post" action="/admin/home-slides-form.php" enctype="multipart/form-data">
         @csrf
         <input type="hidden" name="action" value="save">
         <input type="hidden" name="id" value="{{ $editData ? $editData->id : 0 }}">
@@ -54,7 +54,7 @@
 
         <div class="btn-row">
             <button class="btn btn-primary" type="submit">Simpan</button>
-            <a class="btn btn-outline" href="{{ url('/admin/home-slides.php') }}">Batal</a>
+            <a class="btn btn-outline" href="/admin/home-slides.php">Batal</a>
         </div>
     </form>
 

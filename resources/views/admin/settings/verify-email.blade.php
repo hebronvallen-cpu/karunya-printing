@@ -28,7 +28,7 @@
                 </div>
             </div>
             
-            <form method="POST" action="{{ url('/admin/settings/verify-email.php') }}">
+            <form method="POST" action="/admin/settings/verify-email.php">
                 @csrf
                 
                 <div class="form-group">
@@ -43,12 +43,12 @@
                 
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary">Verifikasi & Ganti Email</button>
-                    <a href="{{ url('/admin/settings.php') }}" class="btn btn-secondary">Batal</a>
+                    <a href="/admin/settings.php" class="btn btn-secondary">Batal</a>
                 </div>
             </form>
             
             <div class="resend-info">
-                <p>Tidak menerima kode OTP? <a href="{{ url('/admin/settings.php') }}">Kembali ke Pengaturan</a></p>
+                <p>Tidak menerima kode OTP? <a href="/admin/settings.php">Kembali ke Pengaturan</a></p>
             </div>
         </div>
     </div>

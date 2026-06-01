@@ -8,7 +8,7 @@
             <p>{{ $editData !== null ? 'Perbarui data layanan.' : 'Tambah layanan baru.' }}</p>
         </div>
         <div class="panel-actions">
-            <a class="btn btn-outline" href="{{ url('/admin/services.php') }}">Kembali ke Daftar</a>
+            <a class="btn btn-outline" href="/admin/services.php">Kembali ke Daftar</a>
         </div>
     </div>
 
@@ -20,7 +20,7 @@
     @endif
 
     <div class="form-grid">
-        <form method="POST" class="admin-form form-left" action="{{ url('/admin/services-form.php') }}">
+        <form method="POST" class="admin-form form-left" action="/admin/services-form.php">
             @csrf
             <input type="hidden" name="action" value="save">
             <input type="hidden" name="id" value="{{ $editData?->id ?? 0 }}">
@@ -49,7 +49,7 @@
 
             <div class="btn-row">
                 <button class="btn btn-primary" type="submit">{{ $editData !== null ? 'Simpan Perubahan' : 'Tambah Layanan' }}</button>
-                <a class="btn btn-outline" href="{{ url('/admin/services.php') }}">Batal</a>
+                <a class="btn btn-outline" href="/admin/services.php">Batal</a>
             </div>
         </form>
 

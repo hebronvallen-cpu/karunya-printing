@@ -17,13 +17,13 @@
                 <p>Pilih kategori pengaturan untuk dikelola</p>
             </div>
             <div class="settings-actions">
-                <a class="btn btn-long btn-primary" href="{{ url('/admin/settings-profile.php') }}">
+                <a class="btn btn-long btn-primary" href="/admin/settings-profile.php">
                     <i class="fas fa-user-circle" style="margin-right: 10px;"></i> Profil Admin
                 </a>
-                <a class="btn btn-long btn-warning" href="{{ url('/admin/settings-password.php') }}">
+                <a class="btn btn-long btn-warning" href="/admin/settings-password.php">
                     <i class="fas fa-key" style="margin-right: 10px;"></i> Ubah Password
                 </a>
-                <a class="btn btn-long btn-info" href="{{ url('/admin/settings-contact.php') }}">
+                <a class="btn btn-long btn-info" href="/admin/settings-contact.php">
                     <i class="fas fa-address-book" style="margin-right: 10px;"></i> Kontak & Media Sosial
                 </a>
             </div>

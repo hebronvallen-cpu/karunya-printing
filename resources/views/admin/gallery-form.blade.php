@@ -12,7 +12,7 @@
             <p>{{ $editData ? 'Perbarui data foto galeri layanan.' : 'Tambah foto galeri layanan baru.' }}</p>
         </div>
         <div class="panel-actions">
-            <a class="btn btn-outline" href="{{ url('/admin/gallery.php') }}">Kembali ke Daftar</a>
+            <a class="btn btn-outline" href="/admin/gallery.php">Kembali ke Daftar</a>
         </div>
 
     @if (session('success'))
@@ -23,7 +23,7 @@
     @endif
 
     <div class="form-grid">
-        <form method="POST" class="admin-form form-left" enctype="multipart/form-data" action="{{ url('/admin/gallery-form.php') }}">
+        <form method="POST" class="admin-form form-left" enctype="multipart/form-data" action="/admin/gallery-form.php">
             @csrf
             <input type="hidden" name="action" value="save">
             <input type="hidden" name="id" value="{{ $editData?->id ?? 0 }}">
@@ -59,7 +59,7 @@
 
             <div class="btn-row">
                 <button class="btn btn-primary" type="submit">{{ $editData !== null ? 'Update' : 'Tambah' }}</button>
-                <a class="btn btn-outline" href="{{ url('/admin/gallery.php') }}">Batal</a>
+                <a class="btn btn-outline" href="/admin/gallery.php">Batal</a>
             </div>
         </form>
 
@@ -67,7 +67,7 @@
             @if ($editData !== null && filled($editData->image_path))
                 @php
                     $previewPath = \App\Support\LegacySite::mediaUrl((string) $editData->image_path);
-                    $previewUrl = str_starts_with($previewPath, 'http') ? $previewPath : url($previewPath);
+                    $previewUrl = str_starts_with($previewPath, 'http') ? $previewPath : $previewPath;
                 @endphp
                 <div class="preview-current panel">
                     <h4>Foto Saat Ini</h4>

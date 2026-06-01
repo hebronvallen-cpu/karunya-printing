@@ -5,7 +5,7 @@
 @extends('admin.layout')
 
 @section('page-styles-admin')
-    <link rel="stylesheet" href="{{ url('/css/admin/styles/gallery.css') }}?v={{ filemtime(public_path('css/admin/styles/gallery.css')) }}">
+    <link rel="stylesheet" href="/css/admin/styles/gallery.css?v={{ filemtime(public_path('css/admin/styles/gallery.css')) }}">
 @endsection
 
 @section('content')
@@ -16,11 +16,11 @@
             <p class="panel-subtitle">Menampilkan {{ $galleryItems->count() }} dari {{ $galleryTotalCount }} data galeri.</p>
         </div>
         <div class="panel-actions">
-            <a class="btn btn-primary" href="{{ url('/admin/gallery-form.php') }}">+ Tambah Galeri</a>
+            <a class="btn btn-primary" href="/admin/gallery-form.php">+ Tambah Galeri</a>
         </div>
     </div>
 
-    <form method="GET" class="admin-filters admin-filters-grid" action="{{ url('/admin/gallery.php') }}">
+    <form method="GET" class="admin-filters admin-filters-grid" action="/admin/gallery.php">
         <div class="field-group">
             <label for="gallery-service">Filter layanan</label>
             <select id="gallery-service" name="service">
@@ -42,7 +42,7 @@
 
         <div class="field-actions">
             <button class="btn btn-primary" type="submit">Terapkan</button>
-            <a class="btn btn-outline" href="{{ url('/admin/gallery.php') }}">Reset</a>
+            <a class="btn btn-outline" href="/admin/gallery.php">Reset</a>
         </div>
     </form>
 
@@ -71,7 +71,7 @@
                                 // Jika tersimpan sebagai data URI (base64), jangan dibungkus url() karena akan rusak.
                                 $itemUrl = str_starts_with($itemPath, 'data:')
                                     ? $itemPath
-                                    : (str_starts_with($itemPath, 'http') ? $itemPath : url($itemPath));
+                                    : (str_starts_with($itemPath, 'http') ? $itemPath : $itemPath);
                             @endphp
 
                             <tr>
@@ -88,8 +88,8 @@
                                 <td>{{ $item->sort_order }}</td>
                                 <td>{{ $item->is_active ? 'Aktif' : 'Nonaktif' }}</td>
                                 <td class="actions">
-                                    <a class="btn btn-outline" href="{{ url('/admin/gallery-form.php') }}?edit={{ $item->id }}">Edit</a>
-                                    <form method="POST" action="{{ url('/admin/gallery.php') }}" onsubmit="return confirm('Hapus item ini?');">
+                                    <a class="btn btn-outline" href="/admin/gallery-form.php?edit={{ $item->id }}">Edit</a>
+                                    <form method="POST" action="/admin/gallery.php" onsubmit="return confirm('Hapus item ini?');">
                                         @csrf
                                         <input type="hidden" name="action" value="delete">
                                         <input type="hidden" name="id" value="{{ $item->id }}">

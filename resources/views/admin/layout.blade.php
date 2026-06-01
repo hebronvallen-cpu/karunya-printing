@@ -8,9 +8,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <title>{{ $pageTitle }} | Admin Karunya Printing</title>
-    <link rel="stylesheet" href="{{ url('/admin.css') }}?v={{ filemtime(public_path('admin.css')) }}">
-    <link rel="stylesheet" href="{{ url('/css/admin/base.css') }}?v={{ $adminStyleVersion }}">
+    <link rel="stylesheet" href="/admin.css?v={{ filemtime(public_path('admin.css')) }}">
+    <link rel="stylesheet" href="/css/admin/base.css?v={{ $adminStyleVersion }}">
     @yield('page-styles-admin')
     <script>const savedAdminTheme = localStorage.getItem('admin-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); document.documentElement.setAttribute('data-theme', savedAdminTheme);</script>
 </head>
@@ -20,7 +21,7 @@
             <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle Sidebar" aria-expanded="true">
                 <span></span><span></span><span></span>
             </button>
-            <a href="{{ url('/admin/dashboard.php') }}" class="brand">
+            <a href="/admin/dashboard.php" class="brand">
                 <span class="brand-mark" aria-hidden="true">KP</span>
                 <span class="brand-title wordmark header-wordmark">
                     <span class="wordmark-script">Karunya</span>
@@ -28,36 +29,36 @@
             </a>
 <div class="nav-actions">
                 <span class="admin-user">{{ $adminName }}</span>
-                <a class="btn btn-outline btn-sm" href="{{ url('/admin/settings.php') }}">Pengaturan</a>
-                <a class="btn btn-primary btn-sm" href="{{ url('/') }}" target="_blank" rel="noopener">Lihat Website</a>
-                <a class="btn btn-outline btn-sm" href="{{ url('/admin/logout.php') }}">Logout</a>
+                <a class="btn btn-outline btn-sm" href="/admin/settings.php">Pengaturan</a>
+                <a class="btn btn-primary btn-sm" href="/" target="_blank" rel="noopener">Lihat Website</a>
+                <a class="btn btn-outline btn-sm" href="/admin/logout.php">Logout</a>
                 <button class="theme-toggle" aria-label="Toggle Dark Mode"></button>
             </div>
     </header>
 
     <aside class="admin-sidebar" id="admin-sidebar">
         <nav class="sidebar-nav">
-            <a @class(['nav-item', 'active' => $currentPage === 'dashboard.php']) href="{{ url('/admin/dashboard.php') }}">
+            <a @class(['nav-item', 'active' => $currentPage === 'dashboard.php']) href="/admin/dashboard.php">
                 Dashboard
             </a>
-            <a @class(['nav-item', 'active' => $currentPage === 'home-slides.php']) href="{{ url('/admin/home-slides.php') }}">
+            <a @class(['nav-item', 'active' => $currentPage === 'home-slides.php']) href="/admin/home-slides.php">
                 Slider Home
             </a>
-            <a @class(['nav-item', 'active' => $currentPage === 'gallery.php']) href="{{ url('/admin/gallery.php') }}">
+            <a @class(['nav-item', 'active' => $currentPage === 'gallery.php']) href="/admin/gallery.php">
                 Galeri
             </a>
-            <a @class(['nav-item', 'active' => $currentPage === 'prices.php']) href="{{ url('/admin/prices.php') }}">
+            <a @class(['nav-item', 'active' => $currentPage === 'prices.php']) href="/admin/prices.php">
                 Harga
             </a>
-            <a @class(['nav-item', 'active' => $currentPage === 'services.php']) href="{{ url('/admin/services.php') }}">
+            <a @class(['nav-item', 'active' => $currentPage === 'services.php']) href="/admin/services.php">
                 Layanan
             </a>
             <hr>
-<a class="nav-item" href="{{ url('/') }}" target="_blank" rel="noopener">
+<a class="nav-item" href="/" target="_blank" rel="noopener">
                 Lihat Website
             </a>
             <hr>
-            <a @class(['nav-item', 'active' => $currentPage === 'settings.php']) href="{{ url('/admin/settings.php') }}">
+            <a @class(['nav-item', 'active' => $currentPage === 'settings.php']) href="/admin/settings.php">
                 Pengaturan
             </a>
         </nav>
