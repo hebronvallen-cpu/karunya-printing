@@ -29,6 +29,16 @@
             </select>
         </div>
 
+        <div class="field-group">
+            <label for="price-service">Filter layanan</label>
+            <select id="price-service" name="service">
+                <option value="0" @selected($serviceFilter === 0)>Semua layanan</option>
+                @foreach ($services as $service)
+                    <option value="{{ $service->id }}" @selected($serviceFilter === (int) $service->id)>{{ $service->title }}</option>
+                @endforeach
+            </select>
+        </div>
+
         <div class="field-actions">
             <button class="btn btn-primary" type="submit">Terapkan</button>
             <a class="btn btn-outline" href="/admin/prices.php">Reset</a>
@@ -53,7 +63,7 @@
                 <tbody>
                     @foreach ($priceItems as $item)
                         <tr>
-                            <td>{{ $item->service_name }}</td>
+                            <td>{{ $item->service?->title ?? '-' }}</td>
                             <td>{{ $item->size_info }}</td>
                             <td>{{ $item->price_text }}</td>
                             <td>{{ $item->sort_order }}</td>

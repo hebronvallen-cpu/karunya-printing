@@ -25,8 +25,13 @@
             <input type="hidden" name="id" value="{{ $editData?->id ?? 0 }}">
 
             <div class="form-group">
-                <label for="service_name">Layanan *</label>
-                <input id="service_name" name="service_name" type="text" value="{{ $editData?->service_name ?? '' }}" required maxlength="100">
+                <label for="service_id">Layanan *</label>
+                <select id="service_id" name="service_id" required>
+                    <option value="">Pilih layanan</option>
+                    @foreach ($services as $service)
+                        <option value="{{ $service->id }}" @selected((int) ($editData?->service_id ?? 0) === (int) $service->id)>{{ $service->title }}</option>
+                    @endforeach
+                </select>
             </div>
 
             <div class="form-group">
@@ -61,7 +66,7 @@
                 <h4>Preview Tabel Harga</h4>
                 <table class="preview-table">
                     <tr>
-                        <td>{{ $editData?->service_name ?? 'Layanan' }}</td>
+                        <td>{{ $editData?->service?->title ?? 'Layanan' }}</td>
                         <td>{{ $editData?->size_info ?? 'ukuran' }}</td>
                         <td>{{ $editData?->price_text ?? 'Rp 0' }}</td>
                     </tr>

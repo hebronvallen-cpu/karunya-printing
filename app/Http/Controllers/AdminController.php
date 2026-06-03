@@ -86,7 +86,7 @@ class AdminController extends Controller
             'weeklyWhatsappClicks' => SiteActivityLog::query()->where('kunci_peristiwa', 'whatsapp_click')->where('waktu_dibuat', '>=', now()->subDays(7))->count(),
             'weeklyGalleryPreviews' => SiteActivityLog::query()->where('kunci_peristiwa', 'gallery_preview')->where('waktu_dibuat', '>=', now()->subDays(7))->count(),
             'latestGallery' => GalleryItem::query()->latest('waktu_diperbarui')->limit(5)->get(),
-            'latestPrices' => PriceItem::query()->latest('waktu_diperbarui')->limit(5)->get(),
+            'latestPrices' => PriceItem::query()->with('service')->latest('waktu_diperbarui')->limit(5)->get(),
             'latestHomeSlides' => HomeSlide::query()->latest('waktu_diperbarui')->limit(5)->get(),
             'activityBreakdown' => $activityBreakdown,
             'recentActivities' => $recentActivities,
@@ -370,12 +370,23 @@ class AdminController extends Controller
                 return redirect('/admin/prices.php')->with('success', 'Item harga berhasil dihapus.');
             }
         }
+        $searchQuery = trim((string) $request->query('q', ''));
         $statusFilter = (string) $request->query('status', 'all');
         $serviceFilter = (int) $request->query('service', 0);
         if (! in_array($statusFilter, ['all', 'active', 'inactive'], true)) {
             $statusFilter = 'all';
         }
-        $query = PriceItem::query();
+        $query = PriceItem::query()->with('service');
+        if ($searchQuery !== '') {
+            $query->where(function ($builder) use ($searchQuery): void {
+                $builder
+                    ->where('info_ukuran', 'like', '%' . $searchQuery . '%')
+                    ->orWhere('teks_harga', 'like', '%' . $searchQuery . '%')
+                    ->orWhereHas('service', function ($serviceQuery) use ($searchQuery): void {
+                        $serviceQuery->where('judul', 'like', '%' . $searchQuery . '%');
+                    });
+            });
+        }
         if ($statusFilter !== 'all') {
             $query->where('aktif', $statusFilter === 'active');
         }
@@ -386,11 +397,12 @@ class AdminController extends Controller
             'pageTitle' => 'Kelola Harga',
             'pageSubtitle' => 'Manajemen daftar harga layanan.',
             'currentPage' => 'prices.php',
-            'priceItems' => $query->orderBy('urutan_tampil')->orderBy('id_harga_item')->get(),
-            'pricesTotalCount' => PriceItem::count(),
+            'priceItems' => $query->orderBy('urutan_tampil')->orderBy('id_harga_layanan')->get(),
+            'priceTotalCount' => PriceItem::count(),
             'pricesActiveCount' => PriceItem::where('aktif', true)->count(),
             'pricesInactiveCount' => PriceItem::where('aktif', false)->count(),
             'services' => Service::query()->where('aktif', true)->orderBy('urutan_tampil')->get(),
+            'searchQuery' => $searchQuery,
             'statusFilter' => $statusFilter,
             'serviceFilter' => $serviceFilter,
         ]));
@@ -403,7 +415,6 @@ class AdminController extends Controller
             $id = (int) $request->input('id', 0);
             if ($action === 'save') {
                 $serviceId = (int) $request->input('service_id', 0);
-                $serviceName = trim((string) $request->input('service_name', ''));
                 $sizeInfo = trim((string) $request->input('size_info', ''));
                 $priceText = trim((string) $request->input('price_text', ''));
                 
@@ -413,7 +424,7 @@ class AdminController extends Controller
                     return redirect('/admin/prices-form.php')->with('error', 'Pilih layanan yang tersedia.');
                 }
                 
-                if ($serviceName === '' || $sizeInfo === '' || $priceText === '') {
+                if ($sizeInfo === '' || $priceText === '') {
                     return redirect('/admin/prices-form.php')->with('error', 'Semua field wajib diisi.');
                 }
                 $item = $id > 0 ? PriceItem::find($id) : new PriceItem();
@@ -422,7 +433,6 @@ class AdminController extends Controller
                 }
                 $item->fill([
                     'id_layanan' => $serviceId,
-                    'nama_layanan' => $serviceName,
                     'info_ukuran' => $sizeInfo,
                     'teks_harga' => $priceText,
                     'urutan_tampil' => (int) $request->input('sort_order', 0),
@@ -433,7 +443,7 @@ class AdminController extends Controller
             }
         }
         $editId = $request->query('edit');
-        $editData = $editId ? PriceItem::find((int) $editId) : null;
+        $editData = $editId ? PriceItem::query()->with('service')->find((int) $editId) : null;
         return view('admin.prices-form', $this->adminPageData([
             'pageTitle' => $editData ? 'Edit Harga' : 'Tambah Harga',
             'pageSubtitle' => $editData ? 'Perbarui data harga layanan.' : 'Tambah harga layanan baru.',
@@ -569,4 +579,3 @@ class AdminController extends Controller
         return $service ? (int) $service->id_layanan : 0;
     }
 }
-

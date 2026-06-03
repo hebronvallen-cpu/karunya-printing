@@ -140,7 +140,7 @@
             <tbody>
                 @foreach ($latestPrices as $row)
                     <tr>
-                        <td>{{ $row->service_name }}</td>
+                        <td>{{ $row->service?->title ?? '-' }}</td>
                         <td>{{ $row->price_text }}</td>
                         <td>{{ $row->updated_at }}</td>
                     </tr>
