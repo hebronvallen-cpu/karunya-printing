@@ -547,6 +547,7 @@ class AdminController extends Controller
             'pageTitle' => 'Admin',
             'pageSubtitle' => '',
             'currentPage' => '',
+            'adminName' => (string) session('admin_name', ''),
         ], $data);
     }
 
