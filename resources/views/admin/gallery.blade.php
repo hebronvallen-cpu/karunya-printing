@@ -26,7 +26,7 @@
             <select id="gallery-service" name="service">
                 <option value="0">Semua layanan</option>
                 @foreach ($services as $service)
-                    <option value="{{ $service->id }}" @selected($serviceFilter === $service->id)>{{ $service->title }}</option>
+                    <option value="{{ $service->id_layanan }}" @selected($serviceFilter === $service->id_layanan)>{{ $service->judul }}</option>
                 @endforeach
             </select>
         </div>
