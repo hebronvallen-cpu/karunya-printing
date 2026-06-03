@@ -30,14 +30,14 @@
             <input type="hidden" name="current_image_path" value="{{ $editData?->image_path ?? '' }}">
 
             <div class="form-group">
-                <label for="service_name">Kategori Layanan *</label>
-                <select id="service_name" name="service_name" required>
-                    <option value="">Pilih...</option>
-                    @foreach ($serviceOptions as $service)
-                        <option value="{{ $service }}" @selected(($editData?->title ?? '') === $service)>{{ $service }}</option>
+                <label for="service_id">Kategori Layanan *</label>
+                <select id="service_id" name="service_id" required>
+                    <option value="">Pilih layanan...</option>
+                    @foreach ($services as $service)
+                        <option value="{{ $service->id }}" @selected(($editData?->service_id ?? 0) == $service->id)>{{ $service->title }}</option>
                     @endforeach
                 </select>
-                <small class="help-block">Kategori diisi otomatis ke `kode_kategori` dan `label_kategori` berdasarkan layanan yang dipilih.</small>
+                <small class="help-block">Pilih layanan untuk mengkategorikan galeri ini.</small>
             </div>
 
 
@@ -82,3 +82,4 @@
         </div>
 </section>
 @endsection
+

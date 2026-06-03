@@ -24,9 +24,9 @@
         <div class="field-group">
             <label for="gallery-service">Filter layanan</label>
             <select id="gallery-service" name="service">
-                <option value="all">Semua layanan</option>
-                @foreach ($serviceOptions as $service)
-                    <option value="{{ $service }}" @selected($serviceFilter === $service)>{{ $service }}</option>
+                <option value="0">Semua layanan</option>
+                @foreach ($services as $service)
+                    <option value="{{ $service->id }}" @selected($serviceFilter === $service->id)>{{ $service->title }}</option>
                 @endforeach
             </select>
         </div>
@@ -160,3 +160,4 @@
     });
 </script>
 @endsection
+
