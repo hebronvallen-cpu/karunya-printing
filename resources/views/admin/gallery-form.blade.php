@@ -34,7 +34,7 @@
                 <select id="service_id" name="service_id" required>
                     <option value="">Pilih layanan...</option>
                     @foreach ($services as $service)
-                        <option value="{{ $service->id_layanan }}" @selected(($editData?->id_layanan ?? 0) == $service->id_layanan)>{{ $service->judul }}</option>
+                        <option value="{{ $service->id }}" @selected(($editData?->service_id ?? 0) == $service->id)>{{ $service->title }}</option>
                     @endforeach
                 </select>
                 <small class="help-block">Pilih layanan untuk mengkategorikan galeri ini.</small>
