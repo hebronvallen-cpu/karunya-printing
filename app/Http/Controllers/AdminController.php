@@ -294,11 +294,17 @@ class AdminController extends Controller
                 return redirect('/admin/services.php')->with('success', 'Layanan berhasil dihapus.');
             }
         }
+        $searchQuery = trim((string) $request->query('q', ''));
         $statusFilter = (string) $request->query('status', 'all');
         if (! in_array($statusFilter, ['all', 'active', 'inactive'], true)) {
             $statusFilter = 'all';
         }
         $query = Service::query();
+        if ($searchQuery !== '') {
+            $query->where(function ($builder) use ($searchQuery): void {
+                $builder->where('judul', 'like', '%' . $searchQuery . '%')->orWhere('deskripsi', 'like', '%' . $searchQuery . '%');
+            });
+        }
         if ($statusFilter !== 'all') {
             $query->where('aktif', $statusFilter === 'active');
         }
@@ -306,10 +312,11 @@ class AdminController extends Controller
             'pageTitle' => 'Kelola Layanan',
             'pageSubtitle' => 'Manajemen daftar layanan yang ditampilkan di website.',
             'currentPage' => 'services.php',
-            'services' => $query->orderBy('urutan_tampil')->orderBy('id_layanan')->get(),
-            'servicesTotalCount' => Service::count(),
-            'servicesActiveCount' => Service::where('aktif', true)->count(),
-            'servicesInactiveCount' => Service::where('aktif', false)->count(),
+            'serviceItems' => $query->orderBy('urutan_tampil')->orderBy('id_layanan')->get(),
+            'serviceTotalCount' => Service::count(),
+            'serviceActiveCount' => Service::where('aktif', true)->count(),
+            'serviceInactiveCount' => Service::where('aktif', false)->count(),
+            'searchQuery' => $searchQuery,
             'statusFilter' => $statusFilter,
         ]));
     }
