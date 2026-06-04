@@ -19,59 +19,58 @@
         </a>
     </div>
 
-    <div class="settings-card-premium">
-        <div class="panel-head">
+    <section class="panel">
+        <div class="panel-head panel-head--between">
             <div>
-                <span class="admin-page-kicker">Security Center</span>
                 <h2>Profil Admin</h2>
                 <p class="panel-subtitle">Konfigurasikan jalur pemulihan akun melalui Email dan WhatsApp.</p>
             </div>
         </div>
 
-        <form method="POST" action="/admin/settings-profile.php" class="admin-form">
-            @csrf
-            <input type="hidden" name="action" value="save">
+        <div class="form-grid">
+            <form method="POST" action="/admin/settings-profile.php" class="admin-form form-left">
+                @csrf
+                <input type="hidden" name="action" value="save">
 
-            <div class="settings-form-group">
-                <label class="form-label">Username</label>
-                <div class="settings-input-wrapper">
-                    <input name="username" type="text" class="form-input" value="{{ old('username', $adminData->nama_pengguna) }}" required>
-                    <p class="input-hint">🆔 Identitas unik login admin (3-30 karakter).</p>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input id="username" name="username" type="text" value="{{ old('username', $adminData->nama_pengguna) }}" required>
+                    <small>🆔 Identitas unik login admin (3-30 karakter).</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="full_name">Nama Lengkap</label>
+                    <input id="full_name" name="full_name" type="text" value="{{ old('full_name', $adminData->nama_lengkap) }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Pemulihan (OTP)</label>
+                    <input id="email" name="email" type="email" value="{{ old('email', $adminData->email) }}" required>
+                    <small>📧 Email utama untuk pengiriman kode OTP saat lupa password.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Nomor WhatsApp (Format 62)</label>
+                    <input id="phone" name="phone" type="tel" value="{{ old('phone', $adminData->nomor_telepon) }}" placeholder="6281234567890">
+                    <small>💬 Gunakan format internasional (contoh: 62812xxx) untuk OTP WhatsApp.</small>
+                </div>
+
+                <div class="form-group check-row">
+                    <input type="checkbox" name="test_otp" id="test_otp" value="1">
+                    <label for="test_otp" style="cursor: pointer;">Kirim WhatsApp uji coba setelah menyimpan</label>
+                </div>
+
+                <div class="btn-row">
+                    <button type="submit" class="btn btn-primary">Perbarui Profil Admin</button>
+                </div>
+            </form>
+
+            <div class="form-preview">
+                <div class="preview-placeholder panel">
+                    <p>Informasi profil ini digunakan untuk keamanan akun dan pengiriman kode verifikasi OTP jika Anda lupa kata sandi.</p>
                 </div>
             </div>
-
-            <div class="settings-form-group">
-                <label class="form-label">Nama Lengkap</label>
-                <div class="settings-input-wrapper">
-                    <input name="full_name" type="text" class="form-input" value="{{ old('full_name', $adminData->nama_lengkap) }}" required>
-                </div>
-            </div>
-
-            <div class="settings-form-group">
-                <label class="form-label">Email Pemulihan (OTP)</label>
-                <div class="settings-input-wrapper">
-                    <input name="email" type="email" class="form-input" value="{{ old('email', $adminData->email) }}" required>
-                    <p class="input-hint">📧 Email utama untuk pengiriman kode OTP saat lupa password.</p>
-                </div>
-            </div>
-
-            <div class="settings-form-group">
-                <label class="form-label">Nomor WhatsApp (Format 62)</label>
-                <div class="settings-input-wrapper">
-                    <input name="phone" type="tel" class="form-input" value="{{ old('phone', $adminData->nomor_telepon) }}" placeholder="6281234567890">
-                    <p class="input-hint">💬 Gunakan format internasional (contoh: 62812xxx) untuk OTP WhatsApp.</p>
-                </div>
-            </div>
-
-            <div class="test-otp-checkbox check-row">
-                <input type="checkbox" name="test_otp" id="test_otp" value="1">
-                <label for="test_otp" style="font-weight: 600; cursor: pointer;">Kirim WhatsApp uji coba setelah menyimpan</label>
-            </div>
-
-            <div class="btn-row" style="margin-top: 2rem;">
-                <button type="submit" class="btn btn-primary full-width">Perbarui Profil Admin</button>
-            </div>
-        </form>
-    </div>
+        </div>
+    </section>
 </div>
 @endsection
