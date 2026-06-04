@@ -10,151 +10,68 @@
         <div class="alert error">{{ session('error') }}</div>
     @endif
 
-    @if($showBackButton)
-    <div style="margin-bottom: 1.5rem;">
-        <a href="/admin/settings.php" class="btn btn-secondary" style="background: #6b7280; color: #fff; text-decoration: none; display: inline-flex; align-items: center; padding: 0.5rem 1rem; border-radius: 8px;">
-            <i class="fas fa-arrow-left" style="margin-right: 8px;"></i> Kembali ke Pengaturan
+    <div class="panel-actions" style="margin-bottom: 1.5rem;">
+        <a href="/admin/settings.php" class="btn btn-outline btn-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-right:8px">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+            </svg>
+            Kembali ke Pengaturan
         </a>
     </div>
-    @endif
 
-    <div class="settings-grid">
-        <div class="card settings-card">
-            <div class="card-header">
+    <div class="settings-card-premium">
+        <div class="panel-head">
+            <div>
+                <span class="admin-page-kicker">Security Center</span>
                 <h2>Profil Admin</h2>
-                <p>Kelola informasi profil akun Anda</p>
+                <p class="panel-subtitle">Konfigurasikan jalur pemulihan akun melalui Email dan WhatsApp.</p>
             </div>
-            <form method="POST" action="/admin/settings-profile.php">
-                @csrf
-                <input type="hidden" name="action" value="update_profile">
-
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input id="username" name="username" type="text" value="{{ old('username', $adminData->nama_pengguna) }}" required>
-                    <small class="form-help">Ubah username akun (unik). 3–30 karakter; huruf, angka, titik, underscore, atau minus.</small>
-                </div>
-
-                <div class="form-group">
-                    <label for="full_name">Nama Lengkap</label>
-                    <input id="full_name" name="full_name" type="text" value="{{ old('full_name', $adminData->nama_lengkap) }}" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Status Akun</label>
-                    <div class="form-static">
-                        {{ $adminData->aktif ? 'Aktif' : 'Nonaktif' }}
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Dibuat</label>
-                    <div class="form-static">
-                        {{ $adminData->waktu_dibuat ? \Carbon\Carbon::parse($adminData->waktu_dibuat)->format('d M Y, H:i') : '-' }}
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-            </form>
         </div>
+
+        <form method="POST" action="/admin/settings-profile.php" class="admin-form">
+            @csrf
+            <input type="hidden" name="action" value="save">
+
+            <div class="settings-form-group">
+                <label class="form-label">Username</label>
+                <div class="settings-input-wrapper">
+                    <input name="username" type="text" class="form-input" value="{{ old('username', $adminData->nama_pengguna) }}" required>
+                    <p class="input-hint">🆔 Identitas unik login admin (3-30 karakter).</p>
+                </div>
+            </div>
+
+            <div class="settings-form-group">
+                <label class="form-label">Nama Lengkap</label>
+                <div class="settings-input-wrapper">
+                    <input name="full_name" type="text" class="form-input" value="{{ old('full_name', $adminData->nama_lengkap) }}" required>
+                </div>
+            </div>
+
+            <div class="settings-form-group">
+                <label class="form-label">Email Pemulihan (OTP)</label>
+                <div class="settings-input-wrapper">
+                    <input name="email" type="email" class="form-input" value="{{ old('email', $adminData->email) }}" required>
+                    <p class="input-hint">📧 Email utama untuk pengiriman kode OTP saat lupa password.</p>
+                </div>
+            </div>
+
+            <div class="settings-form-group">
+                <label class="form-label">Nomor WhatsApp (Format 62)</label>
+                <div class="settings-input-wrapper">
+                    <input name="phone" type="tel" class="form-input" value="{{ old('phone', $adminData->nomor_telepon) }}" placeholder="6281234567890">
+                    <p class="input-hint">💬 Gunakan format internasional (contoh: 62812xxx) untuk OTP WhatsApp.</p>
+                </div>
+            </div>
+
+            <div class="test-otp-checkbox check-row">
+                <input type="checkbox" name="test_otp" id="test_otp" value="1">
+                <label for="test_otp" style="font-weight: 600; cursor: pointer;">Kirim WhatsApp uji coba setelah menyimpan</label>
+            </div>
+
+            <div class="btn-row" style="margin-top: 2rem;">
+                <button type="submit" class="btn btn-primary full-width">Perbarui Profil Admin</button>
+            </div>
+        </form>
     </div>
 </div>
-
-<style>
-.settings-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1.5rem;
-}
-
-.settings-card {
-    background: var(--card-bg, #fff);
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: var(--shadow, 0 1px 3px rgba(0,0,0,0.1));
-}
-
-.settings-card .card-header {
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border-color, #e5e7eb);
-}
-
-.settings-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.btn-long {
-    width: 100%;
-    padding: 0.85rem 1rem;
-    justify-content: flex-start;
-}
-
-.form-group {
-    margin-bottom: 1rem;
-}
-
-.form-group label {
-    display: block;
-    font-size: 0.875rem;
-    font-weight: 500;
-    margin-bottom: 0.375rem;
-    color: var(--text-primary, #111827);
-}
-
-.form-group input[type="text"] {
-    width: 100%;
-    padding: 0.625rem 0.875rem;
-    border: 1px solid var(--border-color, #d1d5db);
-    border-radius: 8px;
-    font-size: 0.9375rem;
-    background: var(--input-bg, #fff);
-    color: var(--text-primary, #111827);
-}
-
-.form-help {
-    display: block;
-    font-size: 0.75rem;
-    color: var(--text-secondary, #6b7280);
-    margin-top: 0.25rem;
-}
-
-.form-static {
-    padding: 0.625rem 0.875rem;
-    font-size: 0.9375rem;
-    color: var(--text-secondary, #6b7280);
-    border: 1px solid var(--border-color, #d1d5db);
-    border-radius: 8px;
-}
-
-.btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.625rem 1rem;
-    border-radius: 8px;
-    font-size: 0.9375rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.15s;
-    text-decoration: none;
-    border: none;
-}
-
-.btn-primary {
-    background: var(--primary, #3b82f6);
-    color: #fff;
-}
-
-.btn-primary:hover {
-    background: var(--primary-dark, #2563eb);
-}
-
-.btn-warning {
-    background: var(--warning, #f59e0b);
-    color: #fff;
-}
-</style>
 @endsection

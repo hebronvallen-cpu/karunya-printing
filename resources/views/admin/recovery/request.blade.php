@@ -35,7 +35,7 @@
                     </span>
                 </div>
                 <h1 class="admin-login-title">Pulihkan Akun</h1>
-                <p class="admin-login-subtitle">Masukkan username atau email untuk memulai proses pemulihan</p>
+                <p class="admin-login-subtitle">Masukkan username, email, atau nomor WhatsApp untuk memulai proses pemulihan</p>
 
                 @if (session('error'))
                     <div class="alert error">{{ session('error') }}</div>
@@ -48,8 +48,16 @@
                 <form method="POST" class="admin-login-form" action="/admin/recovery/request.php">
                     @csrf
                     <div class="form-group">
-                        <label for="username">Username atau Email</label>
-                        <input id="username" name="identifier" type="text" value="{{ old('identifier') }}" placeholder="Masukkan username atau email" required autofocus>
+                        <label for="username">Username, Email, atau Nomor WhatsApp</label>
+                        <input id="username" name="identifier" type="text" value="{{ old('identifier') }}" placeholder="Masukkan username, email, atau nomor WA" required autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="channel">Kirim OTP Lewat</label>
+                        <select id="channel" name="channel" required>
+                            <option value="email" @selected(old('channel', 'email') === 'email')>Email</option>
+                            <option value="whatsapp" @selected(old('channel') === 'whatsapp')>WhatsApp</option>
+                        </select>
+                        <small class="form-help">WhatsApp memerlukan nomor WA admin dan gateway WhatsApp server-side.</small>
                     </div>
                     <button class="btn btn-primary full-width" type="submit">Kirim Kode Verifikasi</button>
                 </form>

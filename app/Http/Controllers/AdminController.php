@@ -14,6 +14,7 @@ use App\Support\LegacySite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use RuntimeException;
@@ -476,30 +477,68 @@ class AdminController extends Controller
             if ($action === 'update_profile' || $action === 'save') {
                 $username = trim((string) $request->input('username', ''));
                 $fullName = trim((string) $request->input('full_name', ''));
+                $email = trim((string) $request->input('email', ''));
+                $phone = $this->normalizePhoneNumber((string) $request->input('phone', ''));
+                $isTestingOtp = $request->boolean('test_otp');
 
                 if (! preg_match('/^[A-Za-z0-9._-]{3,30}$/', $username)) {
                     return back()->withInput()->with('error', 'Username harus 3-30 karakter dan hanya boleh berisi huruf, angka, titik, underscore, atau minus.');
+                }
+
+                if ($email === '') {
+                    return back()->withInput()->with('error', 'Email pemulihan wajib diisi sebagai jalur utama pengiriman OTP.');
+                }
+
+                $emailVerification = EmailVerifier::verify($email);
+                if (! $emailVerification['valid']) {
+                    return back()->withInput()->with('error', $emailVerification['message']);
                 }
 
                 if ($fullName === '' || mb_strlen($fullName) > 120) {
                     return back()->withInput()->with('error', 'Nama lengkap wajib diisi dan maksimal 120 karakter.');
                 }
 
-                $existing = Admin::query()
+                if ($phone !== '' && ! preg_match('/^62[0-9]{8,15}$/', $phone)) {
+                    return back()->withInput()->with('error', 'Nomor WhatsApp harus diawali kode negara 62 (contoh: 62812xxx) agar sistem pengiriman OTP berfungsi.');
+                }
+
+                $existingUsername = Admin::query()
                     ->where('nama_pengguna', $username)
                     ->where('id_admin', '<>', $admin->id_admin)
                     ->first();
-                if ($existing !== null) {
+                if ($existingUsername !== null) {
                     return back()->withInput()->with('error', 'Username sudah digunakan admin lain.');
+                }
+
+                $existingEmail = Admin::query()
+                    ->where('email', $email)
+                    ->where('id_admin', '<>', $admin->id_admin)
+                    ->first();
+                if ($existingEmail !== null) {
+                    return back()->withInput()->with('error', 'Email sudah digunakan admin lain.');
                 }
 
                 $admin->nama_pengguna = $username;
                 $admin->nama_lengkap = $fullName;
+                $admin->email = $email;
+                $admin->nomor_telepon = $phone !== '' ? $phone : null;
                 $admin->save();
 
                 $request->session()->put('admin_name', $fullName);
 
-                return back()->with('success', 'Profil berhasil diperbarui.');
+                // Fitur: Uji coba pengiriman OTP ke WhatsApp jika diminta
+                if ($isTestingOtp && !empty($admin->nomor_telepon)) {
+                    $otp = $this->generateOtp();
+                    $admin->kode_otp = $otp;
+                    $admin->waktu_otp_kedaluwarsa = now()->addMinutes(5);
+                    $admin->save();
+                    
+                    $sent = $this->sendOtpWhatsApp($admin, $otp);
+                    $msg = $sent ? 'Profil disimpan & OTP uji coba terkirim ke WhatsApp.' : 'Profil disimpan, namun gagal mengirim WhatsApp. Cek konfigurasi Gateway.';
+                    return back()->with($sent ? 'success' : 'error', $msg);
+                }
+
+                return back()->with('success', 'Profil admin berhasil diperbarui.');
             }
         }
 
@@ -510,6 +549,204 @@ class AdminController extends Controller
             'adminData' => $admin,
             'showBackButton' => true,
         ]));
+    }
+
+    // ================== RECOVERY - FORGOT PASSWORD ==================
+    public function recoveryRequest(Request $request)
+    {
+        if ($request->session()->has('admin_id')) {
+            return redirect('/admin/dashboard.php');
+        }
+
+        $secretKey = (string) config('legacy.admin_access_key');
+
+        if ($request->isMethod('post')) {
+            $identifier = trim((string) $request->input('identifier', ''));
+            $channel = (string) $request->input('channel', 'email');
+            if (! in_array($channel, ['email', 'whatsapp'], true)) {
+                $channel = 'email';
+            }
+
+            if ($identifier === '') {
+                return back()->withInput()->with('error', 'Username, email, atau nomor WhatsApp wajib diisi.');
+            }
+
+            $phoneIdentifier = $this->normalizePhoneNumber($identifier);
+            $admin = Admin::query()
+                ->where('nama_pengguna', $identifier)
+                ->orWhere('email', $identifier)
+                ->when($phoneIdentifier !== '', function ($query) use ($phoneIdentifier): void {
+                    $query->orWhere('nomor_telepon', $phoneIdentifier);
+                })
+                ->first();
+
+            if ($admin === null || ! $admin->aktif) {
+                return back()->withInput()->with('error', 'Akun tidak ditemukan atau tidak aktif.');
+            }
+
+            if ($channel === 'email' && empty($admin->email)) {
+                return back()->withInput()->with('error', 'Akun ini belum memiliki email pemulihan.');
+            }
+
+            if ($channel === 'whatsapp' && empty($admin->nomor_telepon)) {
+                return back()->withInput()->with('error', 'Akun ini belum memiliki nomor WhatsApp pemulihan.');
+            }
+
+            $otp = $this->generateOtp();
+            $admin->kode_otp = $otp;
+            $admin->waktu_otp_kedaluwarsa = now()->addMinutes(15);
+            $admin->save();
+
+            $sent = $channel === 'whatsapp'
+                ? $this->sendOtpWhatsApp($admin, $otp)
+                : $this->sendOtpEmail($admin, $otp);
+
+            if (! $sent) {
+                $admin->kode_otp = null;
+                $admin->waktu_otp_kedaluwarsa = null;
+                $admin->save();
+
+                $message = $channel === 'whatsapp'
+                    ? 'OTP WhatsApp belum dapat dikirim. Pastikan nomor WA admin sudah benar dan gateway WhatsApp sudah dikonfigurasi.'
+                    : 'OTP email belum dapat dikirim. Periksa konfigurasi email website.';
+
+                return back()->withInput()->with('error', $message);
+            }
+
+            $request->session()->put('recovery_admin_id', (int) $admin->id_admin);
+            $request->session()->put('recovery_identifier', $identifier);
+            $request->session()->put('recovery_channel', $channel);
+
+            return redirect('/admin/recovery/verify.php')->with('success', 'Kode OTP berhasil dikirim.');
+        }
+
+        return view('admin.recovery.request', ['accessKey' => $secretKey]);
+    }
+
+    public function recoveryVerify(Request $request)
+    {
+        if (! $request->session()->has('recovery_admin_id')) {
+            return redirect('/admin/recovery/request.php');
+        }
+
+        $adminId = (int) $request->session()->get('recovery_admin_id');
+        $identifier = (string) $request->session()->get('recovery_identifier', '');
+        $channel = (string) $request->session()->get('recovery_channel', 'email');
+        $admin = Admin::find($adminId);
+
+        if ($admin === null) {
+            $request->session()->forget(['recovery_admin_id', 'recovery_identifier', 'recovery_channel']);
+            return redirect('/admin/recovery/request.php');
+        }
+
+        $secretKey = (string) config('legacy.admin_access_key');
+
+        if ($request->isMethod('post')) {
+            $otp = trim((string) $request->input('otp', ''));
+
+            if (! preg_match('/^[0-9]{6}$/', $otp)) {
+                return back()->with('error', 'Kode OTP harus 6 digit angka.');
+            }
+
+            if (empty($admin->kode_otp) || empty($admin->waktu_otp_kedaluwarsa)) {
+                return redirect('/admin/recovery/request.php')->with('error', 'Kode OTP tidak tersedia. Minta kode baru.');
+            }
+
+            if (now()->gt($admin->waktu_otp_kedaluwarsa)) {
+                $admin->kode_otp = null;
+                $admin->waktu_otp_kedaluwarsa = null;
+                $admin->save();
+
+                return redirect('/admin/recovery/request.php')->with('error', 'Kode OTP sudah kedaluwarsa. Minta kode baru.');
+            }
+
+            if (! hash_equals((string) $admin->kode_otp, $otp)) {
+                return back()->with('error', 'Kode OTP tidak valid.');
+            }
+
+            $resetToken = bin2hex(random_bytes(32));
+            $admin->token_reset = $resetToken;
+            $admin->waktu_token_reset_kedaluwarsa = now()->addMinutes(30);
+            $admin->kode_otp = null;
+            $admin->waktu_otp_kedaluwarsa = null;
+            $admin->save();
+
+            // Logika baru: Langsung masukkan admin ke session (Login Langsung)
+            $request->session()->put('admin_id', (int) $admin->id_admin);
+            $request->session()->put('admin_name', (string) $admin->nama_lengkap);
+            $request->session()->forget(['recovery_admin_id', 'recovery_identifier', 'recovery_channel']);
+
+            return redirect('/admin/dashboard.php')->with('success', 'Verifikasi berhasil! Anda telah masuk secara otomatis.');
+        }
+
+        return view('admin.recovery.verify', [
+            'adminId' => $adminId,
+            'email' => $this->maskRecoveryContact($channel, $admin),
+            'deliveryLabel' => $this->recoveryChannelLabel($channel),
+            'identifier' => $identifier,
+            'channel' => $channel,
+            'accessKey' => $secretKey,
+        ]);
+    }
+
+    public function recoveryReset(Request $request)
+    {
+        if (! $request->session()->has('reset_admin_id') || ! $request->session()->has('reset_token')) {
+            return redirect('/admin/recovery/request.php');
+        }
+
+        $adminId = (int) $request->session()->get('reset_admin_id');
+        $token = (string) $request->session()->get('reset_token');
+        $admin = Admin::find($adminId);
+
+        if ($admin === null || ! hash_equals((string) $admin->token_reset, $token)) {
+            $request->session()->forget(['reset_admin_id', 'reset_token']);
+            return redirect('/admin/recovery/request.php');
+        }
+
+        if ($admin->waktu_token_reset_kedaluwarsa && now()->gt($admin->waktu_token_reset_kedaluwarsa)) {
+            $admin->token_reset = null;
+            $admin->waktu_token_reset_kedaluwarsa = null;
+            $admin->save();
+            $request->session()->forget(['reset_admin_id', 'reset_token']);
+
+            return redirect('/admin/recovery/request.php')->with('error', 'Token reset sudah kedaluwarsa.');
+        }
+
+        $secretKey = (string) config('legacy.admin_access_key');
+
+        if ($request->isMethod('post')) {
+            $password = (string) $request->input('password', '');
+            $passwordConfirmation = (string) $request->input('password_confirmation', '');
+
+            if ($password === '' || $passwordConfirmation === '') {
+                return back()->with('error', 'Password wajib diisi.');
+            }
+
+            if ($password !== $passwordConfirmation) {
+                return back()->with('error', 'Password dan konfirmasi password tidak sama.');
+            }
+
+            if (strlen($password) < 6) {
+                return back()->with('error', 'Password minimal 6 karakter.');
+            }
+
+            $admin->kata_sandi = password_hash($password, PASSWORD_DEFAULT);
+            $admin->token_reset = null;
+            $admin->waktu_token_reset_kedaluwarsa = null;
+            $admin->save();
+
+            $request->session()->forget(['reset_admin_id', 'reset_token']);
+
+            return redirect('/admin/login.php?key=' . urlencode($secretKey))->with('success', 'Password berhasil direset. Silakan login dengan password baru.');
+        }
+
+        return view('admin.recovery.reset', [
+            'adminId' => $adminId,
+            'token' => $token,
+            'username' => $admin->nama_pengguna,
+            'accessKey' => $secretKey,
+        ]);
     }
 
     public function settingsPassword(Request $request)
@@ -578,6 +815,11 @@ class AdminController extends Controller
         ]));
     }
 
+    public function verifyEmailChange(Request $request)
+    {
+        return redirect('/admin/settings-profile.php')->with('error', 'Perubahan email sekarang dilakukan dari Profil Admin.');
+    }
+
     protected function adminPageData(array $data = []): array
     {
         return array_merge([
@@ -587,6 +829,128 @@ class AdminController extends Controller
             'adminName' => (string) session('admin_name', ''),
             'showBackButton' => false,
         ], $data);
+    }
+
+    private function generateOtp(): string
+    {
+        return (string) random_int(100000, 999999);
+    }
+
+    private function sendOtpEmail(Admin $admin, string $otp): bool
+    {
+        $email = (string) $admin->email;
+        if ($email === '') {
+            return false;
+        }
+
+        $subject = 'Kode OTP Reset Password - Karunya Printing';
+        $body = "Halo {$admin->nama_lengkap},\n\n";
+        $body .= "Kode OTP reset password admin Anda adalah: {$otp}\n\n";
+        $body .= "Kode ini berlaku selama 15 menit.\n";
+        $body .= "Jika Anda tidak meminta reset password, abaikan pesan ini.\n\n";
+        $body .= "Salam,\nKarunya Printing";
+
+        try {
+            Mail::raw($body, function ($message) use ($email, $subject): void {
+                $message->to($email)->subject($subject);
+            });
+
+            return true;
+        } catch (\Throwable $error) {
+            Log::error('Failed to send admin recovery OTP email: ' . $error->getMessage());
+            return false;
+        }
+    }
+
+    private function sendOtpWhatsApp(Admin $admin, string $otp): bool
+    {
+        $phone = (string) $admin->nomor_telepon;
+        $endpoint = (string) config('services.whatsapp_otp.endpoint', '');
+
+        if ($phone === '' || $endpoint === '') {
+            return false;
+        }
+
+        $message = "Kode OTP reset password admin Karunya Printing: {$otp}. Berlaku 15 menit. Abaikan jika Anda tidak meminta reset password.";
+        $phoneField = (string) config('services.whatsapp_otp.phone_field', 'to');
+        $messageField = (string) config('services.whatsapp_otp.message_field', 'message');
+        $token = (string) config('services.whatsapp_otp.token', '');
+        $tokenHeader = (string) config('services.whatsapp_otp.token_header', 'Authorization');
+        $tokenPrefix = (string) config('services.whatsapp_otp.token_prefix', 'Bearer');
+
+        try {
+            $request = Http::timeout(12)->acceptJson();
+            if ($token !== '') {
+                $headerValue = trim($tokenPrefix . ' ' . $token);
+                $request = $request->withHeaders([$tokenHeader => $headerValue]);
+            }
+
+            $response = $request->post($endpoint, [
+                $phoneField => $phone,
+                $messageField => $message,
+            ]);
+
+            if ($response->successful()) {
+                return true;
+            }
+
+            Log::warning('WhatsApp OTP gateway returned non-success status.', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+        } catch (\Throwable $error) {
+            Log::error('Failed to send admin recovery OTP WhatsApp: ' . $error->getMessage());
+        }
+
+        return false;
+    }
+
+    private function normalizePhoneNumber(string $phone): string
+    {
+        $digits = preg_replace('/\D+/', '', $phone) ?? '';
+        if ($digits === '') {
+            return '';
+        }
+
+        if (str_starts_with($digits, '0')) {
+            return '62' . substr($digits, 1);
+        }
+
+        if (str_starts_with($digits, '8')) {
+            return '62' . $digits;
+        }
+
+        return $digits;
+    }
+
+    private function maskRecoveryContact(string $channel, Admin $admin): string
+    {
+        if ($channel === 'whatsapp') {
+            $phone = (string) $admin->nomor_telepon;
+            if (strlen($phone) <= 6) {
+                return $phone;
+            }
+
+            return substr($phone, 0, 4) . str_repeat('*', max(strlen($phone) - 7, 0)) . substr($phone, -3);
+        }
+
+        $email = (string) $admin->email;
+        $parts = explode('@', $email, 2);
+        if (count($parts) !== 2) {
+            return $email;
+        }
+
+        $name = $parts[0];
+        $maskedName = strlen($name) <= 2
+            ? substr($name, 0, 1) . '*'
+            : substr($name, 0, 2) . str_repeat('*', max(strlen($name) - 2, 1));
+
+        return $maskedName . '@' . $parts[1];
+    }
+
+    private function recoveryChannelLabel(string $channel): string
+    {
+        return $channel === 'whatsapp' ? 'WhatsApp' : 'email';
     }
 
     protected function looksLikeHash(string $value): bool

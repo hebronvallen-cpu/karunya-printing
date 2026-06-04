@@ -19,7 +19,7 @@
             <section class="admin-login-intro">
                 <span class="admin-login-kicker">Verifikasi</span>
                 <h1 class="admin-login-display">Masukkan kode verifikasi</h1>
-<p class="admin-login-copy">Kami telah mengirim kode OTP ke email Anda. Masukkan kode 6 digit untuk melanjutkan.</p>
+<p class="admin-login-copy">Kami telah mengirim kode OTP ke {{ $deliveryLabel ?? 'email' }} Anda. Masukkan kode 6 digit untuk melanjutkan.</p>
                 <div class="admin-login-points">
                     <span>6 Digit</span>
                     <span>15 Menit</span>
@@ -35,7 +35,7 @@
                     </span>
                 </div>
                 <h1 class="admin-login-title">Verifikasi OTP</h1>
-                <p class="admin-login-subtitle">Kode dikirim ke {{ $email }}</p>
+                <p class="admin-login-subtitle">Kode dikirim via {{ $deliveryLabel ?? 'email' }} ke {{ $email }}</p>
 
                 @if (session('error'))
                     <div class="alert error">{{ session('error') }}</div>
@@ -57,6 +57,7 @@
                         <form method="POST" action="/admin/recovery/request.php" style="display:inline;">
                             @csrf
                             <input type="hidden" name="identifier" value="{{ $identifier }}">
+                            <input type="hidden" name="channel" value="{{ $channel ?? 'email' }}">
                             <button type="submit" class="btn btn-outline btn-sm">Kirim Ulang OTP</button>
                         </form>
                     </div>

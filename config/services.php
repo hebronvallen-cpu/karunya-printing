@@ -35,4 +35,13 @@ return [
         ],
     ],
 
+    'whatsapp_otp' => [
+        'endpoint' => env('WHATSAPP_OTP_ENDPOINT'),
+        'token' => env('WHATSAPP_OTP_TOKEN'),
+        'token_header' => env('WHATSAPP_OTP_TOKEN_HEADER', 'Authorization'),
+        'token_prefix' => env('WHATSAPP_OTP_TOKEN_PREFIX', 'Bearer'),
+        'phone_field' => env('WHATSAPP_OTP_PHONE_FIELD', 'to'),
+        'message_field' => env('WHATSAPP_OTP_MESSAGE_FIELD', 'message'),
+    ],
+
 ];
