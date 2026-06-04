@@ -42,19 +42,16 @@ class EmailVerifier
         $domain = self::extractDomain($email);
         $mxCheck = self::checkMxRecords($domain);
         
-        // Kita anggap valid jika memiliki MX record ATAU setidaknya domain tersebut terdaftar (dns_ok).
-        // Hal ini untuk menghindari kegagalan pada server hosting yang membatasi query MX.
+        // Di lingkungan cloud (seperti Railway), pengecekan DNS sering dibatasi oleh firewall.
+        // Kita tetap melakukan logging jika gagal, tetapi tidak menggagalkan validasi
+        // agar admin tetap bisa menyimpan email pemulihan mereka selama syntax benar.
         if (!$mxCheck['has_mx'] && !$mxCheck['dns_ok']) {
-            return [
-                'valid' => false,
-                'message' => 'Domain email tidak ditemukan. Pastikan email Anda benar dan aktif.',
-                'details' => ['step' => 'dns', 'status' => 'invalid', 'domain' => $domain]
-            ];
+            Log::info('EmailVerifier: DNS lookup inconclusive for domain ' . $domain . '. Proceeding based on syntax.');
         }
         
         return [
             'valid' => true,
-            'message' => 'Email valid dan aktif.',
+            'message' => 'Email divalidasi.',
             'details' => [
                 'step' => 'all',
                 'status' => 'ok',
