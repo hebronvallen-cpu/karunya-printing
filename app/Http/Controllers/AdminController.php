@@ -465,30 +465,50 @@ class AdminController extends Controller
 
     public function settingsProfile(Request $request)
     {
+        $adminId = (int) $request->session()->get('admin_id', 0);
+        $admin = Admin::find($adminId);
+        if ($admin === null) {
+            return redirect('/admin/settings.php')->with('error', 'Admin tidak ditemukan.');
+        }
+
         if ($request->isMethod('post')) {
             $action = (string) $request->input('action', '');
-            if ($action === 'save') {
-                $adminId = (int) $request->session()->get('admin_id', 0);
-                $admin = Admin::find($adminId);
-                if ($admin === null) {
-                    return back()->with('error', 'Admin tidak ditemukan.');
-                }
+            if ($action === 'update_profile' || $action === 'save') {
+                $username = trim((string) $request->input('username', ''));
                 $fullName = trim((string) $request->input('full_name', ''));
-                if ($fullName === '') {
-                    return back()->with('error', 'Nama lengkap wajib diisi.');
+
+                if (! preg_match('/^[A-Za-z0-9._-]{3,30}$/', $username)) {
+                    return back()->withInput()->with('error', 'Username harus 3-30 karakter dan hanya boleh berisi huruf, angka, titik, underscore, atau minus.');
                 }
+
+                if ($fullName === '' || mb_strlen($fullName) > 120) {
+                    return back()->withInput()->with('error', 'Nama lengkap wajib diisi dan maksimal 120 karakter.');
+                }
+
+                $existing = Admin::query()
+                    ->where('nama_pengguna', $username)
+                    ->where('id_admin', '<>', $admin->id_admin)
+                    ->first();
+                if ($existing !== null) {
+                    return back()->withInput()->with('error', 'Username sudah digunakan admin lain.');
+                }
+
+                $admin->nama_pengguna = $username;
                 $admin->nama_lengkap = $fullName;
                 $admin->save();
+
+                $request->session()->put('admin_name', $fullName);
+
                 return back()->with('success', 'Profil berhasil diperbarui.');
             }
         }
-        $adminId = (int) $request->session()->get('admin_id', 0);
-        $admin = Admin::find($adminId);
+
         return view('admin.settings-profile', $this->adminPageData([
             'pageTitle' => 'Pengaturan Profil',
             'pageSubtitle' => 'Kelola profil admin.',
             'currentPage' => 'settings.php',
-            'admin' => $admin,
+            'adminData' => $admin,
+            'showBackButton' => true,
         ]));
     }
 
@@ -565,6 +585,7 @@ class AdminController extends Controller
             'pageSubtitle' => '',
             'currentPage' => '',
             'adminName' => (string) session('admin_name', ''),
+            'showBackButton' => false,
         ], $data);
     }
 
