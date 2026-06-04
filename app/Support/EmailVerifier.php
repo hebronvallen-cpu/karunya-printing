@@ -38,24 +38,17 @@ class EmailVerifier
             ];
         }
         
-        // Step 3: Cek domain MX records
+        // Step 3: Cek keberadaan domain (MX atau DNS Record)
         $domain = self::extractDomain($email);
         $mxCheck = self::checkMxRecords($domain);
         
-        if (!$mxCheck['has_mx']) {
+        // Kita anggap valid jika memiliki MX record ATAU setidaknya domain tersebut terdaftar (dns_ok).
+        // Hal ini untuk menghindari kegagalan pada server hosting yang membatasi query MX.
+        if (!$mxCheck['has_mx'] && !$mxCheck['dns_ok']) {
             return [
                 'valid' => false,
-                'message' => 'Domain email tidak valid. Mail server tidak ditemukan.',
-                'details' => ['step' => 'mx', 'status' => 'no_mx', 'domain' => $domain]
-            ];
-        }
-        
-        // Step 4: Cek apakah domain masih aktif (DNS lookup)
-        if (!$mxCheck['dns_ok']) {
-            return [
-                'valid' => false,
-                'message' => 'Domain email tidak dapat dijangkau. Pastikan domain masih aktif.',
-                'details' => ['step' => 'dns', 'status' => 'unreachable', 'domain' => $domain]
+                'message' => 'Domain email tidak ditemukan. Pastikan email Anda benar dan aktif.',
+                'details' => ['step' => 'dns', 'status' => 'invalid', 'domain' => $domain]
             ];
         }
         
@@ -83,7 +76,7 @@ class EmailVerifier
         $disposableDomains = [
             '10minutemail.com',
             '20minutemail.com',
-            ' guerrillamail.com',
+            'guerrillamail.com',
             'guerrillamail.net',
             'guerrillamail.org',
             'guerrillamail.de',
@@ -115,7 +108,7 @@ class EmailVerifier
             'fakeinbox.com',
             'fakemailgenerator.com',
             'mohmal.com',
-            'temp mail.io',
+            'tempmail.io',
             'tempr.email',
             'discard.email',
             'emptymails.com',
