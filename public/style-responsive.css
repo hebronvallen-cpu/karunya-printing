@@ -465,13 +465,13 @@
     bottom: 1rem;
     right: 1rem;
     width: 3.5rem;
+    min-width: 3.5rem;
     height: 3.5rem;
-    font-size: 0;
+    padding: 0;
   }
 
   .wa-float::before {
-    content: '💬';
-    font-size: 1.5rem;
+    content: none;
   }
 
   .to-top {
@@ -973,12 +973,11 @@
 }
 
 .wa-float {
-  width: auto;
+  width: 3.5rem;
   min-width: 3.5rem;
   height: 3.5rem;
-  padding: 0 1rem;
-  border-radius: 999px;
-  font-weight: 800;
+  padding: 0;
+  border-radius: 50%;
 }
 
 .to-top {

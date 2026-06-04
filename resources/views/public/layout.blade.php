@@ -161,7 +161,11 @@
     @endif
 
     <button class="to-top" id="to-top" type="button" aria-label="Kembali ke atas">&uarr;</button>
-    <a class="wa-float" href="{{ $whatsAppUrl }}" target="_blank" rel="noopener" aria-label="Chat WhatsApp">WhatsApp</a>
+    <a class="wa-float" href="{{ $whatsAppUrl }}" target="_blank" rel="noopener" aria-label="Chat WhatsApp">
+        <svg class="wa-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+            <path d="M16 3.2c-7.1 0-12.8 5.7-12.8 12.7 0 2.4.7 4.8 2 6.8l-1.3 4.9 5.1-1.3c2 1.1 4.3 1.7 6.9 1.7 7.1 0 12.8-5.7 12.8-12.7S23.1 3.2 16 3.2Zm0 22.6c-2.2 0-4.2-.6-5.9-1.8l-.4-.2-3 .8.8-2.9-.2-.5c-1.2-1.7-1.8-3.7-1.8-5.8 0-5.8 4.7-10.5 10.5-10.5s10.5 4.7 10.5 10.5S21.8 25.8 16 25.8Zm5.8-7.8c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.3-.5-2.5-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.5-.5.2-.2.2-.3.3-.5.1-.2.1-.4 0-.5-.1-.2-.7-1.7-1-2.3-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1.1 1.1-1.1 2.6 0 1.5 1.1 3 1.2 3.2.2.2 2.2 3.4 5.3 4.7.7.3 1.3.5 1.8.6.8.2 1.5.2 2 .1.6-.1 1.9-.8 2.2-1.5.3-.8.3-1.4.2-1.5-.2-.2-.4-.3-.8-.5Z"/>
+        </svg>
+    </a>
     <script src="{{ asset('site.js') }}?v={{ $scriptVersion }}"></script>
 </body>
 </html>

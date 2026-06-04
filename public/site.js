@@ -342,7 +342,10 @@
 
     // WhatsApp tracking
     $$('a[href*="wa.me"]').forEach(link => {
-        link.addEventListener('click', () => sendActivity('whatsapp_click', link.textContent.trim()));
+        link.addEventListener('click', () => {
+            const label = link.textContent.trim() || link.getAttribute('aria-label') || 'WhatsApp';
+            sendActivity('whatsapp_click', label);
+        });
     });
 
 

@@ -536,6 +536,13 @@ html {
   z-index: 1001;
 }
 
+.wa-icon {
+  display: block;
+  width: 2rem;
+  height: 2rem;
+  fill: currentColor;
+}
+
 .to-top {
   background: var(--accent-glass);
   color: var(--accent);
@@ -3012,4 +3019,3 @@ body {
     width: 100%;
   }
 }
-
